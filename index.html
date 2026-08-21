@@ -1,0 +1,1474 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BOOX Tile 首页</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f5f3;
+      --side: #ffffff;
+      --paper: #ffffff;
+      --paper-soft: #efebe5;
+      --text: #242424;
+      --muted: #7a7772;
+      --line: #e5e0d8;
+      --accent: #e6613a;
+      --accent-soft: #fff0e9;
+      --ink: #181818;
+      --shadow: 0 22px 54px rgba(74, 57, 40, 0.11);
+      --radius: 18px;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100dvh;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+      transform: none;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(230, 97, 58, 0.26);
+      outline-offset: 3px;
+    }
+
+    .app {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 264px 1fr;
+    }
+
+    .app.hidden,
+    .login-page.hidden {
+      display: none;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 27px 14px;
+      border-right: 1px solid var(--line);
+      background: var(--side);
+    }
+
+    .product {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 0 8px 32px;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    .product-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .product-sub {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-group {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 26px;
+    }
+
+    .nav-label {
+      padding: 0 10px 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .nav-item {
+      min-height: 42px;
+      display: grid;
+      grid-template-columns: 25px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border-radius: 12px;
+      background: transparent;
+      color: #28303b;
+      text-align: left;
+      font-weight: 800;
+    }
+
+    .nav-item.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .nav-ico {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      color: currentColor;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .account {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .account-btn {
+      width: 100%;
+      min-height: 52px;
+      display: grid;
+      grid-template-columns: 30px 1fr 18px;
+      align-items: center;
+      gap: 10px;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .account-copy {
+      display: grid;
+      gap: 1px;
+    }
+
+    .account-copy b {
+      font-size: 13px;
+    }
+
+    .account-copy span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .content {
+      position: relative;
+      min-width: 0;
+      padding: 38px 32px 64px;
+      overflow: hidden;
+    }
+
+    .content::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 150px;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 50% -38%, rgba(238, 229, 215, 0.95) 0 58%, transparent 59%),
+        linear-gradient(180deg, #efe7dc, rgba(239, 231, 220, 0));
+    }
+
+    .top-corner {
+      position: absolute;
+      top: 36px;
+      right: 32px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 8px 22px rgba(45, 40, 34, 0.08);
+      font-weight: 900;
+    }
+
+    .actions {
+      display: grid;
+      gap: 13px;
+      max-width: 100%;
+      padding-top: 240px;
+    }
+
+    .action-card {
+      min-height: 80px;
+      display: grid;
+      grid-template-columns: 1fr 48px;
+      align-items: center;
+      gap: 18px;
+      padding: 0 22px 0 20px;
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--text);
+      box-shadow: 0 1px 0 rgba(41, 34, 26, 0.02);
+      text-align: left;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 34px rgba(55, 45, 34, 0.08);
+    }
+
+    .action-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .action-note {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .action-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #3e3e3e;
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .language-btn {
+      position: fixed;
+      right: 12px;
+      bottom: 304px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #fff;
+      border-radius: 999px;
+      background: #f69ac0;
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(120, 70, 88, 0.18);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(25, 25, 25, 0.32);
+    }
+
+    .modal-backdrop.active {
+      display: grid;
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      overflow: hidden;
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px 24px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head.centered {
+      justify-content: center;
+      position: relative;
+      padding: 34px 62px 20px;
+      border-bottom: 0;
+      text-align: center;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .modal-copy {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .modal-copy:empty {
+      display: none;
+    }
+
+    .close-btn {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--paper-soft);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .modal-head.centered .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 12px;
+      padding: 20px 24px 24px;
+    }
+
+    .modal-body.choice-list {
+      gap: 14px;
+      padding: 16px 32px 30px;
+    }
+
+    .choice-btn {
+      min-height: 88px;
+      display: grid;
+      grid-template-columns: 42px 1fr 28px;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fafafa;
+      color: var(--text);
+      text-align: left;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .choice-btn.primary-choice {
+      border-color: rgba(230, 97, 58, 0.32);
+      background: var(--accent-soft);
+    }
+
+    .choice-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(55, 45, 34, 0.08);
+    }
+
+    .choice-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #f6d9d0;
+      color: var(--accent);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .choice-main {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .choice-title-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .choice-btn b {
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .choice-btn small {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .tag {
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .choice-arrow {
+      color: var(--accent);
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .transfer-flow,
+    .login-flow {
+      display: none;
+      gap: 13px;
+    }
+
+    .transfer-flow.active,
+    .login-flow.active {
+      display: grid;
+    }
+
+    .usb-guide {
+      display: grid;
+      gap: 12px;
+    }
+
+    .usb-step {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fafafa;
+    }
+
+    .usb-step.active {
+      border-color: rgba(230, 97, 58, 0.34);
+      background: var(--accent-soft);
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--paper-soft);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .usb-step.active .step-num {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .step-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+
+    .step-copy {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .inline-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .inline-actions.single {
+      grid-template-columns: 1fr;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      color: #4c4944;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #999690;
+      font-weight: 700;
+    }
+
+    input:focus {
+      border-color: rgba(230, 97, 58, 0.58);
+      box-shadow: 0 0 0 4px rgba(230, 97, 58, 0.13);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .quiet-btn {
+      min-height: 52px;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .primary-btn {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+    }
+
+    .quiet-btn {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .file-chip {
+      display: none;
+      min-height: 38px;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-chip.visible {
+      display: flex;
+    }
+
+    .progress-wrap {
+      display: none;
+      gap: 8px;
+    }
+
+    .progress-wrap.visible {
+      display: grid;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      overflow: hidden;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--paper-soft);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width 240ms ease;
+    }
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .consent input {
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .consent a {
+      color: var(--accent);
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 20;
+      width: min(420px, calc(100% - 28px));
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--paper);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translate(-50%, 10px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .login-page {
+      position: relative;
+      min-height: 100dvh;
+      display: grid;
+      place-items: start center;
+      padding: 108px 20px 64px;
+      overflow: hidden;
+      background: #f8f7f5;
+    }
+
+    .login-page::before,
+    .login-page::after {
+      content: "";
+      position: absolute;
+      left: -8vw;
+      width: 118vw;
+      pointer-events: none;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .login-page::before {
+      top: 12vh;
+      height: 46vh;
+      background: #efe7dc;
+      opacity: 0.72;
+      transform: rotate(-5deg);
+      clip-path: ellipse(62% 45% at 42% 34%);
+    }
+
+    .login-page::after {
+      top: 42vh;
+      height: 34vh;
+      background: #f2ece4;
+      opacity: 0.66;
+      transform: rotate(-7deg);
+      clip-path: ellipse(60% 50% at 38% 62%);
+    }
+
+    .login-shell {
+      position: relative;
+      z-index: 1;
+      width: min(580px, 100%);
+      display: grid;
+      justify-items: center;
+    }
+
+    .login-brand {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      margin-bottom: 116px;
+      text-align: center;
+    }
+
+    .login-brand h1 {
+      margin: 0;
+      font-size: clamp(42px, 3.25vw, 54px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .login-brand i {
+      color: var(--accent);
+      font-style: normal;
+      margin: 0 8px;
+    }
+
+    .login-brand p {
+      margin: 0;
+      color: #343434;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .login-form-page {
+      width: min(580px, 100%);
+      display: grid;
+      gap: 22px;
+    }
+
+    .login-form-page input[type="text"],
+    .login-form-page input[type="password"] {
+      min-height: 80px;
+      padding: 0 26px;
+      border: 0;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.96);
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .login-form-page input::placeholder {
+      color: #9b9995;
+    }
+
+    .forgot-row {
+      min-height: 24px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .forgot-row a {
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .login-form-page .primary-btn {
+      min-height: 74px;
+      border-radius: 20px;
+      font-size: 20px;
+    }
+
+    .code-login {
+      min-height: 48px;
+      border-radius: 14px;
+      color: #77746f;
+      background: transparent;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .login-consent {
+      position: fixed;
+      left: 50%;
+      bottom: 78px;
+      z-index: 1;
+      transform: translateX(-50%);
+      width: min(100% - 28px, 620px);
+      display: flex;
+      justify-content: center;
+      color: #62605c;
+      font-size: 14px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .login-consent label {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .login-consent input {
+      width: 18px;
+      height: 18px;
+      margin: 1px 0 0;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .login-consent a {
+      color: var(--accent);
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .login-language {
+      position: fixed;
+      right: 12px;
+      bottom: 300px;
+      z-index: 1;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #fff;
+      border-radius: 999px;
+      background: #f69ac0;
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(120, 70, 88, 0.18);
+    }
+
+    .login-page:not(.hidden) + .language-btn {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .actions {
+        animation: rise 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 16px;
+      }
+
+      .nav-group:not(:first-of-type),
+      .account {
+        display: none;
+      }
+
+      .nav-group:first-of-type {
+        grid-template-columns: repeat(3, 1fr);
+        margin: 0;
+      }
+
+      .nav-label {
+        grid-column: 1 / -1;
+      }
+
+      .content {
+        padding: 28px 16px 48px;
+      }
+
+      .actions {
+        padding-top: 84px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav-item {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 8px;
+        font-size: 13px;
+      }
+
+      .nav-ico {
+        display: none;
+      }
+
+      .action-card {
+        min-height: 74px;
+        grid-template-columns: 1fr 40px;
+        padding: 0 16px;
+      }
+
+      .action-note {
+        display: none;
+      }
+
+      .language-btn {
+        bottom: 18px;
+      }
+
+      .modal-backdrop {
+        align-items: end;
+        padding: 12px;
+      }
+
+      .modal {
+        border-radius: 22px;
+      }
+
+      .inline-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .login-page {
+        padding: 46px 18px 96px;
+      }
+
+      .login-brand {
+        margin-bottom: 46px;
+      }
+
+      .login-form-page input[type="text"],
+      .login-form-page input[type="password"] {
+        min-height: 62px;
+        font-size: 17px;
+      }
+
+      .login-form-page .primary-btn {
+        min-height: 58px;
+      }
+
+      .login-consent {
+        bottom: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="侧边导航">
+      <div class="product">
+        <div class="mark">N</div>
+        <div>
+          <p class="product-name">Nano Reader</p>
+          <p class="product-sub">桌面端</p>
+        </div>
+      </div>
+
+      <nav class="nav-group" aria-label="阅读">
+        <div class="nav-label">阅读</div>
+        <button class="nav-item active" type="button"><span class="nav-ico">⌂</span><span>首页</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">▤</span><span>书城</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">▧</span><span>图库</span></button>
+      </nav>
+
+      <nav class="nav-group" aria-label="工具">
+        <div class="nav-label">工具</div>
+        <button class="nav-item" type="button"><span class="nav-ico">⌁</span><span>股市信息</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">◷</span><span>倒数日</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">☑</span><span>日常待办</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">⚙</span><span>固件烧录</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">☼</span><span>每日天气</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">▣</span><span>互联网资讯</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">▥</span><span>单词复习</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">▦</span><span>课程提醒</span></button>
+        <button class="nav-item" type="button"><span class="nav-ico">⌁</span><span>舆情监测</span></button>
+      </nav>
+
+      <div class="account">
+        <button class="account-btn" id="accountBtn" type="button">
+          <span class="nav-ico">◎</span>
+          <span class="account-copy"><b>个人中心</b><span>游客模式</span></span>
+          <span>›</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <button class="top-corner" type="button" aria-label="展开设备列表">⌄</button>
+
+      <section class="actions" aria-label="首页操作">
+        <button class="action-card" id="importBook" type="button">
+          <span>
+            <p class="action-title">导入图书</p>
+            <p class="action-note">点击后选择游客传输或登录同步</p>
+          </span>
+          <span class="action-icon">▤</span>
+        </button>
+
+        <button class="action-card" id="importWallpaper" type="button">
+          <span>
+            <p class="action-title">导入壁纸</p>
+            <p class="action-note">本地选择图片并发送到设备</p>
+          </span>
+          <span class="action-icon">▧</span>
+        </button>
+
+        <button class="action-card" id="webLink" type="button">
+          <span>
+            <p class="action-title">网页链接</p>
+            <p class="action-note">把文章链接推送到墨水屏</p>
+          </span>
+          <span class="action-icon">⌘</span>
+        </button>
+
+        <button class="action-card" id="importFont" type="button">
+          <span>
+            <p class="action-title">导入字体</p>
+            <p class="action-note">安装字体后可在设备端切换</p>
+          </span>
+          <span class="action-icon">T</span>
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <section class="login-page hidden" id="loginPage" aria-label="登录 BOOX Tile">
+    <div class="login-shell">
+      <div class="login-brand">
+        <h1>BOOX<i>·</i>Tile</h1>
+        <p>连接你的墨水屏</p>
+      </div>
+
+      <div class="login-form-page">
+        <input id="pageAccount" type="text" autocomplete="username" placeholder="输入手机号/邮箱" />
+        <input id="pagePassword" type="password" autocomplete="current-password" placeholder="输入密码" />
+        <div class="forgot-row">
+          <a href="#">忘记密码</a>
+        </div>
+        <button class="primary-btn" id="pageLoginSubmit" type="button">登录/注册</button>
+        <button class="code-login" type="button">验证码登录</button>
+      </div>
+    </div>
+
+    <div class="login-consent">
+      <label>
+        <input id="pageAgree" type="checkbox" />
+        <span>我已阅读并同意 <a href="#">《用户协议》</a> 和 <a href="#">《隐私政策》</a></span>
+      </label>
+    </div>
+
+    <button class="login-language" type="button" aria-label="切换语言">中A</button>
+  </section>
+
+  <button class="language-btn" type="button" aria-label="切换语言">中A</button>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head centered" id="modalHead">
+        <div>
+          <h2 class="modal-title" id="modalTitle">导入图书</h2>
+          <p class="modal-copy" id="modalCopy">选择本次传输方式。临时传输不需要账号，登录后可保存历史记录。</p>
+        </div>
+        <button class="close-btn" id="closeModal" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="modal-body choice-list" id="choiceFlow">
+        <button class="choice-btn primary-choice" id="usbTransfer" type="button">
+          <span class="choice-icon">USB</span>
+          <span class="choice-main">
+            <span class="choice-title-row"><b>通过 USB 有线传输</b><span class="tag">免登录</span></span>
+            <small>使用数据线连接设备，直接选择文件传输。</small>
+          </span>
+          <span class="choice-arrow">›</span>
+        </button>
+
+        <button class="choice-btn" id="deviceTransfer" type="button">
+          <span class="choice-icon">⌁</span>
+          <span class="choice-main">
+            <span class="choice-title-row"><b>连接设备后传输</b></span>
+            <small>连接附近设备后，将图书发送到当前墨水屏。</small>
+          </span>
+          <span class="choice-arrow">›</span>
+        </button>
+
+        <button class="choice-btn" id="cloudTransfer" type="button">
+          <span class="choice-icon">☁</span>
+          <span class="choice-main">
+            <span class="choice-title-row"><b>使用云端传输</b></span>
+            <small>登录账号后同步书库、设备和导入记录。</small>
+          </span>
+          <span class="choice-arrow">›</span>
+        </button>
+      </div>
+
+      <div class="modal-body transfer-flow" id="transferFlow">
+        <div class="usb-guide">
+          <div class="usb-step active" id="authorizeStep">
+            <span class="step-num">1</span>
+            <div>
+              <p class="step-title">选择墨水屏 TF 卡</p>
+              <p class="step-copy" id="authHint">正在检测 booxtiles，请保持设备通过 USB 连接。</p>
+              <div class="inline-actions single">
+                <button class="primary-btn" id="approveFolder" type="button" hidden>同意授权</button>
+                <button class="secondary-btn" id="manualFolder" type="button" hidden>手动选择</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="usb-step" id="bookStep">
+            <span class="step-num">2</span>
+            <div>
+              <p class="step-title">选择要导入的图书</p>
+              <p class="step-copy">支持 EPUB、PDF、TXT、MOBI 和 AZW3 文件。</p>
+              <button class="secondary-btn" id="pickBook" type="button" disabled>选择图书文件</button>
+            </div>
+          </div>
+
+          <div class="usb-step" id="writeStep">
+            <span class="step-num">3</span>
+            <div>
+              <p class="step-title">写入设备</p>
+              <p class="step-copy">传输完成后，可在墨水屏设备的书库中查看。</p>
+            </div>
+          </div>
+        </div>
+        <input id="bookInput" type="file" accept=".epub,.pdf,.txt,.mobi,.azw3" hidden />
+        <div class="file-chip" id="fileChip">未选择文件</div>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-meta">
+            <span id="progressLabel">准备传输</span>
+            <span id="progressValue">0%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+        <button class="quiet-btn" id="backToChoices" type="button">返回选择方式</button>
+      </div>
+
+      <div class="modal-body login-flow" id="loginFlow">
+        <div class="field">
+          <label for="account">手机号或邮箱</label>
+          <input id="account" type="text" autocomplete="username" placeholder="输入手机号 / 邮箱" />
+        </div>
+        <div class="field">
+          <label for="password">密码</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="输入密码" />
+        </div>
+        <label class="consent">
+          <input id="agree" type="checkbox" />
+          <span>我已阅读并同意 <a href="#">《用户协议》</a> 和 <a href="#">《隐私政策》</a></span>
+        </label>
+        <button class="primary-btn" id="submitLogin" type="button">登录 / 注册</button>
+        <button class="quiet-btn" id="backToChoicesLogin" type="button">返回选择方式</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const app = document.querySelector(".app");
+    const loginPage = document.getElementById("loginPage");
+    const modalHead = document.getElementById("modalHead");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalCopy = document.getElementById("modalCopy");
+    const choiceFlow = document.getElementById("choiceFlow");
+    const transferFlow = document.getElementById("transferFlow");
+    const loginFlow = document.getElementById("loginFlow");
+    const importBook = document.getElementById("importBook");
+    const importWallpaper = document.getElementById("importWallpaper");
+    const webLink = document.getElementById("webLink");
+    const importFont = document.getElementById("importFont");
+    const accountBtn = document.getElementById("accountBtn");
+    const closeModal = document.getElementById("closeModal");
+    const usbTransfer = document.getElementById("usbTransfer");
+    const deviceTransfer = document.getElementById("deviceTransfer");
+    const cloudTransfer = document.getElementById("cloudTransfer");
+    const backToChoices = document.getElementById("backToChoices");
+    const backToChoicesLogin = document.getElementById("backToChoicesLogin");
+    const approveFolder = document.getElementById("approveFolder");
+    const manualFolder = document.getElementById("manualFolder");
+    const authHint = document.getElementById("authHint");
+    const pickBook = document.getElementById("pickBook");
+    const bookInput = document.getElementById("bookInput");
+    const authorizeStep = document.getElementById("authorizeStep");
+    const bookStep = document.getElementById("bookStep");
+    const writeStep = document.getElementById("writeStep");
+    const fileChip = document.getElementById("fileChip");
+    const progressWrap = document.getElementById("progressWrap");
+    const progressLabel = document.getElementById("progressLabel");
+    const progressValue = document.getElementById("progressValue");
+    const progressBar = document.getElementById("progressBar");
+    const submitLogin = document.getElementById("submitLogin");
+    const agree = document.getElementById("agree");
+    const pageLoginSubmit = document.getElementById("pageLoginSubmit");
+    const pageAgree = document.getElementById("pageAgree");
+    const toast = document.getElementById("toast");
+
+    let progressTimer = null;
+    let scanTimer = null;
+    let directoryHandle = null;
+    let demoAuthorized = false;
+    const expectedDriveName = "booxtiles";
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 2400);
+    }
+
+    function openModal(mode = "choices") {
+      modalBackdrop.classList.add("active");
+      modalBackdrop.setAttribute("aria-hidden", "false");
+      showFlow(mode);
+    }
+
+    function closeModalView() {
+      modalBackdrop.classList.remove("active");
+      modalBackdrop.setAttribute("aria-hidden", "true");
+      window.clearInterval(progressTimer);
+      window.clearTimeout(scanTimer);
+    }
+
+    function showLoginPage() {
+      closeModalView();
+      app.classList.add("hidden");
+      loginPage.classList.remove("hidden");
+      document.getElementById("pageAccount").focus();
+    }
+
+    function showFlow(mode) {
+      choiceFlow.style.display = mode === "choices" ? "grid" : "none";
+      transferFlow.classList.toggle("active", mode === "transfer");
+      loginFlow.classList.toggle("active", mode === "login");
+      modalHead.classList.toggle("centered", mode === "choices");
+
+      if (mode === "choices") {
+        modalTitle.textContent = "导入图书";
+        modalCopy.textContent = "";
+      }
+      if (mode === "transfer") {
+        modalTitle.textContent = "USB 有线传输";
+        modalCopy.textContent = "无需登录。先授权 TF 卡目录，再选择图书写入设备。";
+        resetUsbFlow();
+        autoDetectDrive(true);
+      }
+      if (mode === "login") {
+        modalTitle.textContent = "云端传输";
+        modalCopy.textContent = "登录后可以同步书库、管理设备并保留导入历史。";
+      }
+    }
+
+    function resetUsbFlow() {
+      window.clearInterval(progressTimer);
+      window.clearTimeout(scanTimer);
+      directoryHandle = null;
+      demoAuthorized = false;
+      pickBook.disabled = true;
+      approveFolder.hidden = true;
+      manualFolder.hidden = true;
+      authHint.textContent = "正在检测 booxtiles，请保持设备通过 USB 连接。";
+      authorizeStep.classList.add("active");
+      bookStep.classList.remove("active");
+      writeStep.classList.remove("active");
+      fileChip.classList.remove("visible");
+      progressWrap.classList.remove("visible");
+      progressBar.style.width = "0%";
+      progressValue.textContent = "0%";
+      progressLabel.textContent = "准备传输";
+    }
+
+    function markFolderReady(name, isDemo = false) {
+      demoAuthorized = isDemo;
+      pickBook.disabled = false;
+      authHint.textContent = "已授权 " + name + "，下一步选择图书文件。";
+      approveFolder.hidden = true;
+      manualFolder.hidden = true;
+      authorizeStep.classList.remove("active");
+      bookStep.classList.add("active");
+      showToast("已授权 TF 卡目录，可以选择图书。");
+    }
+
+    function renderDetectedDrive(found) {
+      if (found) {
+        authHint.textContent = "已检测到 booxtiles，确认后授权本次 USB 传输。";
+        approveFolder.hidden = false;
+        manualFolder.hidden = true;
+      } else {
+        authHint.textContent = "未检测到 booxtiles，请手动选择 TF 卡根目录。";
+        approveFolder.hidden = true;
+        manualFolder.hidden = false;
+      }
+    }
+
+    function autoDetectDrive(found = true) {
+      window.clearTimeout(scanTimer);
+      approveFolder.hidden = true;
+      manualFolder.hidden = true;
+      authHint.textContent = "正在检测 booxtiles，请保持设备通过 USB 连接。";
+
+      scanTimer = window.setTimeout(() => {
+        renderDetectedDrive(found);
+      }, 650);
+    }
+
+    async function requestFolderAccess() {
+      if (!("showDirectoryPicker" in window)) {
+        showToast("当前浏览器不支持目录授权，请换用支持目录授权的浏览器。");
+        return;
+      }
+
+      try {
+        directoryHandle = await window.showDirectoryPicker({
+          id: "boox-tf-card",
+          mode: "readwrite",
+          startIn: "downloads"
+        });
+
+        const permission = await directoryHandle.requestPermission({ mode: "readwrite" });
+        if (permission !== "granted") {
+          showToast("未获得写入权限，请重新选择 TF 卡目录。");
+          return;
+        }
+
+        markFolderReady(directoryHandle.name);
+      } catch (error) {
+        showToast("未选择目录。请选择墨水屏 TF 卡盘符或根目录。");
+      }
+    }
+
+    async function writeFileToDirectory(file) {
+      if (!directoryHandle || demoAuthorized) return;
+      const target = await directoryHandle.getFileHandle(file.name, { create: true });
+      const writable = await target.createWritable();
+      await writable.write(file);
+      await writable.close();
+    }
+
+    async function startTransfer(file) {
+      const name = file.name.length > 32 ? file.name.slice(0, 29) + "..." : file.name;
+      fileChip.textContent = "已选择：" + name;
+      fileChip.classList.add("visible");
+      progressWrap.classList.add("visible");
+      progressBar.style.width = "0%";
+      progressValue.textContent = "0%";
+      progressLabel.textContent = "正在传输";
+      bookStep.classList.remove("active");
+      writeStep.classList.add("active");
+
+      window.clearInterval(progressTimer);
+      let value = 0;
+      progressTimer = window.setInterval(() => {
+        value += Math.ceil(Math.random() * 12);
+        if (value >= 100) {
+          value = 100;
+          window.clearInterval(progressTimer);
+          progressLabel.textContent = "传输完成";
+          showToast("图书已发送到设备。");
+        }
+        progressBar.style.width = value + "%";
+        progressValue.textContent = value + "%";
+      }, 230);
+
+      try {
+        await writeFileToDirectory(file);
+      } catch (error) {
+        window.clearInterval(progressTimer);
+        progressLabel.textContent = "写入失败";
+        showToast("写入失败，请确认选择的是可写入的 TF 卡目录。");
+      }
+    }
+
+    importBook.addEventListener("click", () => openModal("choices"));
+    usbTransfer.addEventListener("click", () => showFlow("transfer"));
+    deviceTransfer.addEventListener("click", showLoginPage);
+    cloudTransfer.addEventListener("click", showLoginPage);
+    backToChoices.addEventListener("click", () => showFlow("choices"));
+    backToChoicesLogin.addEventListener("click", () => showFlow("choices"));
+    closeModal.addEventListener("click", closeModalView);
+    accountBtn.addEventListener("click", () => openModal("login"));
+    approveFolder.addEventListener("click", () => markFolderReady(expectedDriveName, true));
+    manualFolder.addEventListener("click", requestFolderAccess);
+
+    [importWallpaper, webLink, importFont].forEach((button) => {
+      button.addEventListener("click", showLoginPage);
+    });
+
+    pickBook.addEventListener("click", () => bookInput.click());
+    bookInput.addEventListener("change", () => {
+      const file = bookInput.files && bookInput.files[0];
+      if (file) startTransfer(file);
+    });
+
+    submitLogin.addEventListener("click", () => {
+      if (!agree.checked) {
+        showToast("请先同意用户协议和隐私政策。");
+        return;
+      }
+      showToast("登录成功后继续导入图书。");
+      showFlow("transfer");
+    });
+
+    pageLoginSubmit.addEventListener("click", () => {
+      if (!pageAgree.checked) {
+        showToast("请先同意用户协议和隐私政策。");
+        return;
+      }
+      showToast("登录成功后可继续连接设备或使用云端传输。");
+    });
+
+    modalBackdrop.addEventListener("click", (event) => {
+      if (event.target === modalBackdrop) closeModalView();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModalView();
+      if (event.key === "2" && modalBackdrop.classList.contains("active") && transferFlow.classList.contains("active")) {
+        autoDetectDrive(false);
+      }
+    });
+  </script>
+</body>
+</html>
