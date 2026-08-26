@@ -478,6 +478,21 @@
       gap: 12px;
     }
 
+    .usb-guide-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 4px 0 2px;
+    }
+
+    .usb-guide-nav .secondary-btn,
+    .usb-guide-nav .primary-btn {
+      width: auto;
+      min-width: 112px;
+      min-height: 44px;
+      border-radius: 12px;
+    }
+
     .usb-step {
       display: grid;
       grid-template-columns: 32px 1fr;
@@ -1142,20 +1157,41 @@
 
       <div class="modal-body transfer-flow" id="transferFlow">
         <div class="usb-guide">
-          <div class="usb-step active" id="authorizeStep">
+          <div class="usb-step active" id="connectGuideStep">
             <span class="step-num">1</span>
             <div>
-              <p class="step-title">选择墨水屏 TF 卡</p>
-              <p class="step-copy" id="authHint">正在检测 booxtiles，请保持设备通过 USB 连接。</p>
+              <p class="step-title">用 USB 线连接 Picco 和电脑</p>
+              <p class="step-copy">先完成物理连接，确保这根线支持数据传输。</p>
+            </div>
+          </div>
+
+          <div class="usb-step" id="deviceGuideStep">
+            <span class="step-num">2</span>
+            <div>
+              <p class="step-title">在 Picco 上开启 USB 传输</p>
+              <p class="step-copy">设备进入 USB 传输状态后，再回到这个网页继续操作。</p>
+            </div>
+          </div>
+
+          <div class="usb-step" id="authorizeStep">
+            <span class="step-num">3</span>
+            <div>
+              <p class="step-title">选择 BooxTile 文件夹</p>
+              <p class="step-copy" id="authHint">需要先选择 Picco 中的 BooxTile 文件夹，网页才可以把图书传输到设备。</p>
               <div class="inline-actions single">
-                <button class="primary-btn" id="approveFolder" type="button" hidden>同意授权</button>
-                <button class="secondary-btn" id="manualFolder" type="button" hidden>手动选择</button>
+                <button class="primary-btn" id="approveFolder" type="button" hidden>确定，选择 BooxTile 文件夹</button>
+                <button class="secondary-btn" id="manualFolder" type="button" hidden>重新选择 BooxTile 文件夹</button>
               </div>
             </div>
           </div>
 
+          <div class="usb-guide-nav">
+            <button class="secondary-btn" id="prevGuide" type="button">上一步</button>
+            <button class="primary-btn" id="nextGuide" type="button">下一步</button>
+          </div>
+
           <div class="usb-step" id="bookStep">
-            <span class="step-num">2</span>
+            <span class="step-num">4</span>
             <div>
               <p class="step-title">选择要导入的图书</p>
               <p class="step-copy">支持 EPUB、PDF、TXT、MOBI 和 AZW3 文件。</p>
@@ -1164,7 +1200,7 @@
           </div>
 
           <div class="usb-step" id="writeStep">
-            <span class="step-num">3</span>
+            <span class="step-num">5</span>
             <div>
               <p class="step-title">写入设备</p>
               <p class="step-copy">传输完成后，可在墨水屏设备的书库中查看。</p>
@@ -1230,6 +1266,10 @@
     const approveFolder = document.getElementById("approveFolder");
     const manualFolder = document.getElementById("manualFolder");
     const authHint = document.getElementById("authHint");
+    const connectGuideStep = document.getElementById("connectGuideStep");
+    const deviceGuideStep = document.getElementById("deviceGuideStep");
+    const prevGuide = document.getElementById("prevGuide");
+    const nextGuide = document.getElementById("nextGuide");
     const pickBook = document.getElementById("pickBook");
     const bookInput = document.getElementById("bookInput");
     const authorizeStep = document.getElementById("authorizeStep");
@@ -1250,6 +1290,7 @@
     let scanTimer = null;
     let directoryHandle = null;
     let demoAuthorized = false;
+    let usbGuideIndex = 0;
     const expectedDriveName = "booxtiles";
 
     function showToast(message) {
@@ -1291,9 +1332,8 @@
       }
       if (mode === "transfer") {
         modalTitle.textContent = "USB 有线传输";
-        modalCopy.textContent = "无需登录。先授权 TF 卡目录，再选择图书写入设备。";
+        modalCopy.textContent = "按步骤完成连接后，选择 BooxTile 文件夹即可导入图书。";
         resetUsbFlow();
-        autoDetectDrive(true);
       }
       if (mode === "login") {
         modalTitle.textContent = "云端传输";
@@ -1306,11 +1346,14 @@
       window.clearTimeout(scanTimer);
       directoryHandle = null;
       demoAuthorized = false;
+      usbGuideIndex = 0;
       pickBook.disabled = true;
       approveFolder.hidden = true;
       manualFolder.hidden = true;
-      authHint.textContent = "正在检测 booxtiles，请保持设备通过 USB 连接。";
-      authorizeStep.classList.add("active");
+      authHint.textContent = "需要先选择 Picco 中的 BooxTile 文件夹，网页才可以把图书传输到设备。";
+      connectGuideStep.classList.add("active");
+      deviceGuideStep.classList.remove("active");
+      authorizeStep.classList.remove("active");
       bookStep.classList.remove("active");
       writeStep.classList.remove("active");
       fileChip.classList.remove("visible");
@@ -1318,26 +1361,37 @@
       progressBar.style.width = "0%";
       progressValue.textContent = "0%";
       progressLabel.textContent = "准备传输";
+      renderUsbGuide();
+    }
+
+    function renderUsbGuide() {
+      connectGuideStep.classList.toggle("active", usbGuideIndex === 0);
+      deviceGuideStep.classList.toggle("active", usbGuideIndex === 1);
+      authorizeStep.classList.toggle("active", usbGuideIndex === 2);
+      prevGuide.disabled = usbGuideIndex === 0;
+      nextGuide.hidden = usbGuideIndex === 2;
+      approveFolder.hidden = usbGuideIndex !== 2 || !pickBook.disabled;
+      manualFolder.hidden = true;
     }
 
     function markFolderReady(name, isDemo = false) {
       demoAuthorized = isDemo;
       pickBook.disabled = false;
-      authHint.textContent = "已授权 " + name + "，下一步选择图书文件。";
+      authHint.textContent = "已选择 " + name + "，现在可以选择图书并传输到 Picco。";
       approveFolder.hidden = true;
       manualFolder.hidden = true;
       authorizeStep.classList.remove("active");
       bookStep.classList.add("active");
-      showToast("已授权 TF 卡目录，可以选择图书。");
+      showToast("已选择 BooxTile 文件夹，可以选择图书。");
     }
 
     function renderDetectedDrive(found) {
       if (found) {
-        authHint.textContent = "已检测到 booxtiles，确认后授权本次 USB 传输。";
+        authHint.textContent = "已检测到 BooxTile 文件夹，确认后选择图书。";
         approveFolder.hidden = false;
         manualFolder.hidden = true;
       } else {
-        authHint.textContent = "未检测到 booxtiles，请手动选择 TF 卡根目录。";
+        authHint.textContent = "未找到 BooxTile 文件夹，请重新选择 Picco 中的 BooxTile 文件夹。";
         approveFolder.hidden = true;
         manualFolder.hidden = false;
       }
@@ -1347,7 +1401,7 @@
       window.clearTimeout(scanTimer);
       approveFolder.hidden = true;
       manualFolder.hidden = true;
-      authHint.textContent = "正在检测 booxtiles，请保持设备通过 USB 连接。";
+      authHint.textContent = "正在检测 BooxTile 文件夹。";
 
       scanTimer = window.setTimeout(() => {
         renderDetectedDrive(found);
@@ -1369,13 +1423,13 @@
 
         const permission = await directoryHandle.requestPermission({ mode: "readwrite" });
         if (permission !== "granted") {
-          showToast("未获得写入权限，请重新选择 TF 卡目录。");
+          showToast("未获得写入权限，请重新选择 BooxTile 文件夹。");
           return;
         }
 
         markFolderReady(directoryHandle.name);
       } catch (error) {
-        showToast("未选择目录。请选择墨水屏 TF 卡盘符或根目录。");
+        showToast("未选择文件夹。请选择 Picco 中的 BooxTile 文件夹。");
       }
     }
 
@@ -1417,7 +1471,7 @@
       } catch (error) {
         window.clearInterval(progressTimer);
         progressLabel.textContent = "写入失败";
-        showToast("写入失败，请确认选择的是可写入的 TF 卡目录。");
+        showToast("写入失败，请确认选择的是可写入的 BooxTile 文件夹。");
       }
     }
 
@@ -1429,7 +1483,15 @@
     backToChoicesLogin.addEventListener("click", () => showFlow("choices"));
     closeModal.addEventListener("click", closeModalView);
     accountBtn.addEventListener("click", () => openModal("login"));
-    approveFolder.addEventListener("click", () => markFolderReady(expectedDriveName, true));
+    prevGuide.addEventListener("click", () => {
+      usbGuideIndex = Math.max(0, usbGuideIndex - 1);
+      renderUsbGuide();
+    });
+    nextGuide.addEventListener("click", () => {
+      usbGuideIndex = Math.min(2, usbGuideIndex + 1);
+      renderUsbGuide();
+    });
+    approveFolder.addEventListener("click", requestFolderAccess);
     manualFolder.addEventListener("click", requestFolderAccess);
 
     [importWallpaper, webLink, importFont].forEach((button) => {
