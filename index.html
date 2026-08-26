@@ -571,6 +571,14 @@
       display: none;
     }
 
+    .step-copy.primary-copy {
+      margin-top: 0;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+
     .inline-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1250,7 +1258,7 @@
           <div class="usb-step" id="authorizeStep">
             <span class="step-num">3</span>
             <div>
-              <p class="step-copy" id="authHint">点击按钮，在新打开的窗口中选择「BOOXTILE」，将 Picco 设为图书接收设备。</p>
+              <p class="step-copy primary-copy" id="authHint">点击按钮，在新打开的窗口中选择「BOOXTILE」，将 Picco 设为图书接收设备。</p>
               <div class="receiver-picker">
                 <button class="primary-btn" id="approveFolder" type="button" hidden>选择接收设备</button>
                 <div class="receiver-path" id="receiverPath">
