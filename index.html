@@ -1174,7 +1174,6 @@
             <span class="step-num">1</span>
             <div>
               <p class="step-title">使用 USB 线连接 Picco 和电脑</p>
-              <p class="step-copy">先完成物理连接，确保这根线支持数据传输。</p>
             </div>
           </div>
 
@@ -1231,7 +1230,7 @@
             <div class="progress-bar" id="progressBar"></div>
           </div>
         </div>
-        <button class="quiet-btn" id="backToChoices" type="button">返回选择方式</button>
+        <button class="quiet-btn" id="backToChoices" type="button" hidden></button>
       </div>
 
       <div class="modal-body login-flow" id="loginFlow">
@@ -1248,7 +1247,7 @@
           <span>我已阅读并同意 <a href="#">《用户协议》</a> 和 <a href="#">《隐私政策》</a></span>
         </label>
         <button class="primary-btn" id="submitLogin" type="button">登录 / 注册</button>
-        <button class="quiet-btn" id="backToChoicesLogin" type="button">返回选择方式</button>
+        <button class="quiet-btn" id="backToChoicesLogin" type="button" hidden></button>
       </div>
     </section>
   </div>
@@ -1342,7 +1341,7 @@
       }
       if (mode === "transfer") {
         modalTitle.textContent = "USB 有线传输";
-        modalCopy.textContent = "按步骤完成准备后，选择 BOOXTILE 文件夹即可导入图书。";
+        modalCopy.textContent = "";
         resetUsbFlow();
       }
       if (mode === "login") {
