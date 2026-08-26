@@ -1160,7 +1160,7 @@
           <div class="usb-step active" id="connectGuideStep">
             <span class="step-num">1</span>
             <div>
-              <p class="step-title">用 USB 线连接 Picco 和电脑</p>
+              <p class="step-title">使用 USB 线连接 Picco 和电脑</p>
               <p class="step-copy">先完成物理连接，确保这根线支持数据传输。</p>
             </div>
           </div>
@@ -1168,19 +1168,19 @@
           <div class="usb-step" id="deviceGuideStep">
             <span class="step-num">2</span>
             <div>
-              <p class="step-title">在 Picco 上开启 USB 传输</p>
-              <p class="step-copy">设备进入 USB 传输状态后，再回到这个网页继续操作。</p>
+              <p class="step-title">在 Picco 上开启「USB 接收文件」</p>
+              <p class="step-copy">在 Picco 上点击：接收文件 > USB > 开启 USB 接收文件。</p>
             </div>
           </div>
 
           <div class="usb-step" id="authorizeStep">
             <span class="step-num">3</span>
             <div>
-              <p class="step-title">选择 BooxTile 文件夹</p>
-              <p class="step-copy" id="authHint">需要先选择 Picco 中的 BooxTile 文件夹，网页才可以把图书传输到设备。</p>
+              <p class="step-title">选择 BOOXTILE 文件夹</p>
+              <p class="step-copy" id="authHint">点击下方「选择目录」按钮，在新打开的窗口中选择「BOOXTILE」文件夹，并点击确认。</p>
               <div class="inline-actions single">
-                <button class="primary-btn" id="approveFolder" type="button" hidden>确定，选择 BooxTile 文件夹</button>
-                <button class="secondary-btn" id="manualFolder" type="button" hidden>重新选择 BooxTile 文件夹</button>
+                <button class="primary-btn" id="approveFolder" type="button" hidden>选择目录</button>
+                <button class="secondary-btn" id="manualFolder" type="button" hidden>重新选择目录</button>
               </div>
             </div>
           </div>
@@ -1332,7 +1332,7 @@
       }
       if (mode === "transfer") {
         modalTitle.textContent = "USB 有线传输";
-        modalCopy.textContent = "按步骤完成连接后，选择 BooxTile 文件夹即可导入图书。";
+        modalCopy.textContent = "按步骤完成准备后，选择 BOOXTILE 文件夹即可导入图书。";
         resetUsbFlow();
       }
       if (mode === "login") {
@@ -1350,7 +1350,7 @@
       pickBook.disabled = true;
       approveFolder.hidden = true;
       manualFolder.hidden = true;
-      authHint.textContent = "需要先选择 Picco 中的 BooxTile 文件夹，网页才可以把图书传输到设备。";
+      authHint.textContent = "点击下方「选择目录」按钮，在新打开的窗口中选择「BOOXTILE」文件夹，并点击确认。";
       connectGuideStep.classList.add("active");
       deviceGuideStep.classList.remove("active");
       authorizeStep.classList.remove("active");
@@ -1382,16 +1382,16 @@
       manualFolder.hidden = true;
       authorizeStep.classList.remove("active");
       bookStep.classList.add("active");
-      showToast("已选择 BooxTile 文件夹，可以选择图书。");
+      showToast("已选择 BOOXTILE 文件夹，可以选择图书。");
     }
 
     function renderDetectedDrive(found) {
       if (found) {
-        authHint.textContent = "已检测到 BooxTile 文件夹，确认后选择图书。";
+        authHint.textContent = "已检测到 BOOXTILE 文件夹，确认后选择图书。";
         approveFolder.hidden = false;
         manualFolder.hidden = true;
       } else {
-        authHint.textContent = "未找到 BooxTile 文件夹，请重新选择 Picco 中的 BooxTile 文件夹。";
+        authHint.textContent = "未找到 BOOXTILE 文件夹，请重新选择 Picco 中的 BOOXTILE 文件夹。";
         approveFolder.hidden = true;
         manualFolder.hidden = false;
       }
@@ -1401,7 +1401,7 @@
       window.clearTimeout(scanTimer);
       approveFolder.hidden = true;
       manualFolder.hidden = true;
-      authHint.textContent = "正在检测 BooxTile 文件夹。";
+      authHint.textContent = "正在检测 BOOXTILE 文件夹。";
 
       scanTimer = window.setTimeout(() => {
         renderDetectedDrive(found);
@@ -1423,13 +1423,13 @@
 
         const permission = await directoryHandle.requestPermission({ mode: "readwrite" });
         if (permission !== "granted") {
-          showToast("未获得写入权限，请重新选择 BooxTile 文件夹。");
+          showToast("未获得写入权限，请重新选择 BOOXTILE 文件夹。");
           return;
         }
 
         markFolderReady(directoryHandle.name);
       } catch (error) {
-        showToast("未选择文件夹。请选择 Picco 中的 BooxTile 文件夹。");
+        showToast("未选择文件夹。请选择 Picco 中的 BOOXTILE 文件夹。");
       }
     }
 
@@ -1471,14 +1471,12 @@
       } catch (error) {
         window.clearInterval(progressTimer);
         progressLabel.textContent = "写入失败";
-        showToast("写入失败，请确认选择的是可写入的 BooxTile 文件夹。");
+        showToast("写入失败，请确认选择的是可写入的 BOOXTILE 文件夹。");
       }
     }
 
     importBook.addEventListener("click", () => openModal("choices"));
-    usbTransfer.addEventListener("click", () => {
-      window.location.href = "https://owenzhidong-debug.github.io/picco-usb-transfer-guide/";
-    });
+    usbTransfer.addEventListener("click", () => showFlow("transfer"));
     deviceTransfer.addEventListener("click", showLoginPage);
     cloudTransfer.addEventListener("click", showLoginPage);
     backToChoices.addEventListener("click", () => showFlow("choices"));
