@@ -494,7 +494,7 @@
     }
 
     .usb-step {
-      display: grid;
+      display: none;
       grid-template-columns: 32px 1fr;
       gap: 12px;
       padding: 14px;
@@ -504,8 +504,14 @@
     }
 
     .usb-step.active {
+      display: grid;
       border-color: rgba(230, 97, 58, 0.34);
       background: var(--accent-soft);
+    }
+
+    .usb-step.result-step.active {
+      border-color: var(--line);
+      background: #fafafa;
     }
 
     .step-num {
@@ -548,6 +554,10 @@
 
     .inline-actions.single {
       grid-template-columns: 1fr;
+    }
+
+    .usb-guide-nav.hidden {
+      display: none;
     }
 
     .field {
@@ -1190,19 +1200,19 @@
             <button class="primary-btn" id="nextGuide" type="button">下一步</button>
           </div>
 
-          <div class="usb-step" id="bookStep">
-            <span class="step-num">4</span>
+          <div class="usb-step result-step" id="bookStep">
+            <span class="step-num">✓</span>
             <div>
-              <p class="step-title">选择要导入的图书</p>
-              <p class="step-copy">支持 EPUB、PDF、TXT、MOBI 和 AZW3 文件。</p>
+              <p class="step-title">BOOXTILE 文件夹已选择</p>
+              <p class="step-copy">现在可以选择要导入到 Picco 的图书文件。</p>
               <button class="secondary-btn" id="pickBook" type="button" disabled>选择图书文件</button>
             </div>
           </div>
 
-          <div class="usb-step" id="writeStep">
-            <span class="step-num">5</span>
+          <div class="usb-step result-step" id="writeStep">
+            <span class="step-num">✓</span>
             <div>
-              <p class="step-title">写入设备</p>
+              <p class="step-title">正在写入设备</p>
               <p class="step-copy">传输完成后，可在墨水屏设备的书库中查看。</p>
             </div>
           </div>
@@ -1287,11 +1297,9 @@
     const toast = document.getElementById("toast");
 
     let progressTimer = null;
-    let scanTimer = null;
     let directoryHandle = null;
     let demoAuthorized = false;
     let usbGuideIndex = 0;
-    const expectedDriveName = "booxtiles";
 
     function showToast(message) {
       toast.textContent = message;
@@ -1310,7 +1318,6 @@
       modalBackdrop.classList.remove("active");
       modalBackdrop.setAttribute("aria-hidden", "true");
       window.clearInterval(progressTimer);
-      window.clearTimeout(scanTimer);
     }
 
     function showLoginPage() {
@@ -1343,7 +1350,6 @@
 
     function resetUsbFlow() {
       window.clearInterval(progressTimer);
-      window.clearTimeout(scanTimer);
       directoryHandle = null;
       demoAuthorized = false;
       usbGuideIndex = 0;
@@ -1361,6 +1367,7 @@
       progressBar.style.width = "0%";
       progressValue.textContent = "0%";
       progressLabel.textContent = "准备传输";
+      prevGuide.closest(".usb-guide-nav").classList.remove("hidden");
       renderUsbGuide();
     }
 
@@ -1381,31 +1388,9 @@
       approveFolder.hidden = true;
       manualFolder.hidden = true;
       authorizeStep.classList.remove("active");
+      prevGuide.closest(".usb-guide-nav").classList.add("hidden");
       bookStep.classList.add("active");
       showToast("已选择 BOOXTILE 文件夹，可以选择图书。");
-    }
-
-    function renderDetectedDrive(found) {
-      if (found) {
-        authHint.textContent = "已检测到 BOOXTILE 文件夹，确认后选择图书。";
-        approveFolder.hidden = false;
-        manualFolder.hidden = true;
-      } else {
-        authHint.textContent = "未找到 BOOXTILE 文件夹，请重新选择 Picco 中的 BOOXTILE 文件夹。";
-        approveFolder.hidden = true;
-        manualFolder.hidden = false;
-      }
-    }
-
-    function autoDetectDrive(found = true) {
-      window.clearTimeout(scanTimer);
-      approveFolder.hidden = true;
-      manualFolder.hidden = true;
-      authHint.textContent = "正在检测 BOOXTILE 文件夹。";
-
-      scanTimer = window.setTimeout(() => {
-        renderDetectedDrive(found);
-      }, 650);
     }
 
     async function requestFolderAccess() {
@@ -1416,10 +1401,16 @@
 
       try {
         directoryHandle = await window.showDirectoryPicker({
-          id: "boox-tf-card",
+          id: "booxtile-folder",
           mode: "readwrite",
           startIn: "downloads"
         });
+
+        if (directoryHandle.name.toUpperCase() !== "BOOXTILE") {
+          showToast("请选择名为 BOOXTILE 的文件夹。");
+          directoryHandle = null;
+          return;
+        }
 
         const permission = await directoryHandle.requestPermission({ mode: "readwrite" });
         if (permission !== "granted") {
@@ -1527,9 +1518,6 @@
 
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeModalView();
-      if (event.key === "2" && modalBackdrop.classList.contains("active") && transferFlow.classList.contains("active")) {
-        autoDetectDrive(false);
-      }
     });
   </script>
 </body>
