@@ -582,6 +582,46 @@
       grid-template-columns: 1fr;
     }
 
+    .receiver-picker {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .receiver-path {
+      display: none;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 12px 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .receiver-path.visible {
+      display: grid;
+    }
+
+    .receiver-path span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .receiver-path button {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: var(--paper-soft);
+      color: var(--ink);
+      font-weight: 900;
+    }
+
     .usb-guide-nav.hidden {
       display: none;
     }
@@ -1203,19 +1243,20 @@
           <div class="usb-step" id="deviceGuideStep">
             <span class="step-num">2</span>
             <div>
-              <p class="step-title">在 Picco 上开启「USB 接收文件」</p>
-              <p class="step-copy">点击：接收文件 > USB > 开启 USB 接收文件。</p>
+              <p class="step-title">在 Picco 上点击：接收文件 > USB > 开启 USB 接收文件</p>
             </div>
           </div>
 
           <div class="usb-step" id="authorizeStep">
             <span class="step-num">3</span>
             <div>
-              <p class="step-title">选择 BOOXTILE 文件夹</p>
-              <p class="step-copy" id="authHint">点击下方「选择目录」按钮，在新打开的窗口中选择「BOOXTILE」文件夹，并点击确认。</p>
-              <div class="inline-actions single">
-                <button class="primary-btn" id="approveFolder" type="button" hidden>选择目录</button>
-                <button class="secondary-btn" id="manualFolder" type="button" hidden>重新选择目录</button>
+              <p class="step-copy" id="authHint">点击按钮，在新打开的窗口中选择「BOOXTILE」，将 Picco 设为图书接收设备。</p>
+              <div class="receiver-picker">
+                <button class="primary-btn" id="approveFolder" type="button" hidden>选择接收设备</button>
+                <div class="receiver-path" id="receiverPath">
+                  <span id="receiverPathText"></span>
+                  <button id="manualFolder" type="button">更改路径</button>
+                </div>
               </div>
             </div>
           </div>
@@ -1223,6 +1264,7 @@
           <div class="usb-guide-nav">
             <button class="secondary-btn" id="prevGuide" type="button">上一步</button>
             <button class="primary-btn" id="nextGuide" type="button">下一步</button>
+            <button class="primary-btn" id="startBookTransfer" type="button" hidden disabled>开始传书</button>
           </div>
 
           <div class="usb-step result-step" id="bookStep">
@@ -1306,6 +1348,9 @@
     const deviceGuideStep = document.getElementById("deviceGuideStep");
     const prevGuide = document.getElementById("prevGuide");
     const nextGuide = document.getElementById("nextGuide");
+    const startBookTransfer = document.getElementById("startBookTransfer");
+    const receiverPath = document.getElementById("receiverPath");
+    const receiverPathText = document.getElementById("receiverPathText");
     const pickBook = document.getElementById("pickBook");
     const bookInput = document.getElementById("bookInput");
     const authorizeStep = document.getElementById("authorizeStep");
@@ -1382,8 +1427,11 @@
       usbGuideIndex = 0;
       pickBook.disabled = true;
       approveFolder.hidden = true;
-      manualFolder.hidden = true;
-      authHint.textContent = "点击下方「选择目录」按钮，在新打开的窗口中选择「BOOXTILE」文件夹，并点击确认。";
+      receiverPath.classList.remove("visible");
+      receiverPathText.textContent = "";
+      startBookTransfer.hidden = true;
+      startBookTransfer.disabled = true;
+      authHint.textContent = "点击按钮，在新打开的窗口中选择「BOOXTILE」，将 Picco 设为图书接收设备。";
       connectGuideStep.classList.add("active");
       deviceGuideStep.classList.remove("active");
       authorizeStep.classList.remove("active");
@@ -1405,18 +1453,17 @@
       prevGuide.disabled = usbGuideIndex === 0;
       nextGuide.hidden = usbGuideIndex === 2;
       approveFolder.hidden = usbGuideIndex !== 2 || !pickBook.disabled;
-      manualFolder.hidden = true;
+      startBookTransfer.hidden = usbGuideIndex !== 2;
     }
 
     function markFolderReady(name, isDemo = false) {
       demoAuthorized = isDemo;
       pickBook.disabled = false;
-      authHint.textContent = "已选择 " + name + "，现在可以选择图书并传输到 Picco。";
+      authHint.textContent = "Picco 已设为图书接收设备。";
       approveFolder.hidden = true;
-      manualFolder.hidden = true;
-      authorizeStep.classList.remove("active");
-      prevGuide.closest(".usb-guide-nav").classList.add("hidden");
-      bookStep.classList.add("active");
+      receiverPathText.textContent = name;
+      receiverPath.classList.add("visible");
+      startBookTransfer.disabled = false;
       showToast("已选择 BOOXTILE 文件夹，可以选择图书。");
     }
 
@@ -1517,6 +1564,7 @@
     });
 
     pickBook.addEventListener("click", () => bookInput.click());
+    startBookTransfer.addEventListener("click", () => bookInput.click());
     bookInput.addEventListener("change", () => {
       const file = bookInput.files && bookInput.files[0];
       if (file) startTransfer(file);
