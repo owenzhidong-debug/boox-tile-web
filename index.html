@@ -1476,7 +1476,9 @@
     }
 
     importBook.addEventListener("click", () => openModal("choices"));
-    usbTransfer.addEventListener("click", () => showFlow("transfer"));
+    usbTransfer.addEventListener("click", () => {
+      window.location.href = "https://owenzhidong-debug.github.io/picco-usb-transfer-guide/";
+    });
     deviceTransfer.addEventListener("click", showLoginPage);
     cloudTransfer.addEventListener("click", showLoginPage);
     backToChoices.addEventListener("click", () => showFlow("choices"));
