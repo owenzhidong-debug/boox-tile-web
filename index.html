@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>BOOX Tile 首页</title>
   <style>
     :root {
@@ -494,7 +497,7 @@
     }
 
     .usb-step {
-      display: none;
+      display: none !important;
       grid-template-columns: 32px 1fr;
       gap: 12px;
       padding: 14px;
@@ -504,7 +507,7 @@
     }
 
     .usb-step.active {
-      display: grid;
+      display: grid !important;
       border-color: rgba(230, 97, 58, 0.34);
       background: var(--accent-soft);
     }
