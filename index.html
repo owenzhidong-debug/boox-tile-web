@@ -325,6 +325,7 @@
 
     .modal.usb-mode {
       width: min(520px, 100%);
+      border-radius: 22px;
     }
 
     .modal-head {
@@ -389,7 +390,7 @@
     }
 
     .modal-body.transfer-flow {
-      padding: 20px 24px 22px;
+      padding: 18px 24px 20px;
     }
 
     .modal-body.choice-list {
@@ -490,14 +491,14 @@
 
     .usb-guide {
       display: grid;
-      gap: 14px;
+      gap: 0;
     }
 
     .usb-guide-nav {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin: 0;
+      margin-top: 22px;
     }
 
     .usb-guide-nav .secondary-btn,
@@ -511,8 +512,10 @@
     .usb-step {
       display: none !important;
       grid-template-columns: 32px 1fr;
+      align-items: center;
       gap: 12px;
       padding: 18px 20px;
+      min-height: 86px;
       border: 1px solid var(--line);
       border-radius: 16px;
       background: #fafafa;
@@ -558,6 +561,10 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.45;
+    }
+
+    .step-copy:empty {
+      display: none;
     }
 
     .inline-actions {
