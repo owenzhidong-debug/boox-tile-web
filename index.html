@@ -694,6 +694,27 @@
       height: auto;
     }
 
+    .device-flow-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+      background: #fffaf6;
+    }
+
+    .device-flow-steps span {
+      display: grid;
+      place-items: center;
+      min-height: 34px;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
     .step-copy {
       margin: 5px 0 0;
       color: var(--muted);
@@ -1221,6 +1242,10 @@
         height: 76px;
       }
 
+      .device-flow-steps {
+        grid-template-columns: 1fr;
+      }
+
       .usb-plug {
         left: 90px;
         top: 71px;
@@ -1424,7 +1449,12 @@
               <p class="step-title">在 Picco 上点击：接收文件 > USB > 开启 USB 接收文件</p>
             </div>
             <div class="device-flow-visual">
-              <img src="assets/usb-device-flow.png" alt="Picco 设备端 USB 传输入口和开启 USB Disk 的操作流程">
+              <img src="assets/usb-device-flow.png?v=2" alt="Picco 设备端 USB 传输入口和开启 USB Disk 的操作流程" loading="eager" decoding="sync">
+              <div class="device-flow-steps" aria-label="设备端操作步骤">
+                <span>1. 点击 Transfer</span>
+                <span>2. 选择 USB</span>
+                <span>3. 开启 USB Disk</span>
+              </div>
             </div>
           </div>
 
