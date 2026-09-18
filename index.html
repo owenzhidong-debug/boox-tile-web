@@ -947,6 +947,60 @@
       margin-top: 14px;
     }
 
+    .folder-help {
+      position: relative;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: -4px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: help;
+      outline: none;
+    }
+
+    .folder-help::before {
+      content: "?";
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(230, 97, 58, 0.14);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .folder-help-tip {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 10px);
+      z-index: 2;
+      width: min(320px, 78vw);
+      padding: 12px 14px;
+      border: 1px solid rgba(230, 97, 58, 0.24);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--text);
+      box-shadow: 0 16px 36px rgba(55, 45, 34, 0.14);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.55;
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .folder-help:hover .folder-help-tip,
+    .folder-help:focus-visible .folder-help-tip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .receiver-path {
       display: none;
       grid-template-columns: 1fr auto;
@@ -1706,6 +1760,10 @@
                 </div>
               </div>
               <span class="finder-cursor" aria-hidden="true"></span>
+            </div>
+            <div class="folder-help" tabindex="0">
+              <span>没有显示 BOOX Tile？</span>
+              <div class="folder-help-tip" role="tooltip">请确认 Picco 已开启 USB Disk，并使用支持数据传输的数据线连接电脑。如果仍未显示，请重新插拔数据线，等待系统识别后再点击选择接收设备。</div>
             </div>
             <div class="receiver-picker">
               <div class="receiver-path" id="receiverPath">
