@@ -947,13 +947,21 @@
       margin-top: 14px;
     }
 
+    .folder-help-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: -4px;
+      text-align: center;
+    }
+
     .folder-help {
       position: relative;
-      justify-self: center;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      margin-top: -4px;
+      margin: 0 auto;
       color: var(--accent);
       font-size: 13px;
       font-weight: 900;
@@ -1761,9 +1769,11 @@
               </div>
               <span class="finder-cursor" aria-hidden="true"></span>
             </div>
-            <div class="folder-help" tabindex="0">
-              <span>没有显示 BOOX Tile？</span>
-              <div class="folder-help-tip" role="tooltip">请确认 Picco 已开启 USB Disk，并使用支持数据传输的数据线连接电脑。如果仍未显示，请重新插拔数据线，等待系统识别后再点击选择接收设备。</div>
+            <div class="folder-help-wrap">
+              <div class="folder-help" tabindex="0">
+                <span>没有显示 BOOX Tile？</span>
+                <div class="folder-help-tip" role="tooltip">请确认 Picco 已开启 USB Disk，并使用支持数据传输的数据线连接电脑。如果仍未显示，请重新插拔数据线，等待系统识别后再点击选择接收设备。</div>
+              </div>
             </div>
             <div class="receiver-picker">
               <div class="receiver-path" id="receiverPath">
