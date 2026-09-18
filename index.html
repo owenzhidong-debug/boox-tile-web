@@ -681,31 +681,6 @@
       box-shadow: 270px 3px 0 -3px #292929;
     }
 
-    .usb-label {
-      position: absolute;
-      left: 50%;
-      top: 24px;
-      transform: translateX(-50%);
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #fff;
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 900;
-      box-shadow: 0 8px 18px rgba(55, 45, 34, 0.08);
-    }
-
-    .visual-caption {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 12px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      text-align: center;
-    }
-
     .step-copy {
       margin: 5px 0 0;
       color: var(--muted);
@@ -1238,10 +1213,6 @@
         top: 71px;
       }
 
-      .usb-label {
-        top: 18px;
-      }
-
       .inline-actions {
         grid-template-columns: 1fr;
       }
@@ -1421,18 +1392,16 @@
       <div class="modal-body transfer-flow" id="transferFlow">
         <div class="usb-guide">
           <div class="usb-step with-visual active" id="connectGuideStep">
-            <div class="usb-illustration" aria-label="墨水屏通过 USB 数据线连接电脑示意图">
-              <span class="usb-label">USB 数据线连接</span>
+            <div class="visual-step-title">
+              <span class="step-num">1</span>
+              <p class="step-title">使用 USB 线连接 Picco 和电脑</p>
+            </div>
+            <div class="usb-illustration" aria-label="墨水屏连接电脑示意图">
               <div class="guide-device">
                 <div class="guide-device-screen">Picco</div>
               </div>
               <span class="usb-plug" aria-hidden="true"></span>
               <div class="guide-computer" aria-hidden="true"></div>
-              <div class="visual-caption">将 Picco 用数据线连接到电脑</div>
-            </div>
-            <div class="visual-step-title">
-              <span class="step-num">1</span>
-              <p class="step-title">使用 USB 线连接 Picco 和电脑</p>
             </div>
           </div>
 
