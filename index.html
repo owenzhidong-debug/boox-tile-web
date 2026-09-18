@@ -328,7 +328,7 @@
     }
 
     .modal.usb-mode {
-      width: min(560px, 100%);
+      width: min(640px, 100%);
       border-radius: 22px;
     }
 
@@ -679,6 +679,19 @@
       border-radius: 5px;
       background: #292929;
       box-shadow: 270px 3px 0 -3px #292929;
+    }
+
+    .device-flow-visual {
+      overflow: hidden;
+      border: 1px solid rgba(230, 97, 58, 0.22);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .device-flow-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     .step-copy {
@@ -1405,10 +1418,13 @@
             </div>
           </div>
 
-          <div class="usb-step" id="deviceGuideStep">
-            <span class="step-num">2</span>
-            <div>
+          <div class="usb-step with-visual" id="deviceGuideStep">
+            <div class="visual-step-title">
+              <span class="step-num">2</span>
               <p class="step-title">在 Picco 上点击：接收文件 > USB > 开启 USB 接收文件</p>
+            </div>
+            <div class="device-flow-visual">
+              <img src="assets/usb-device-flow.png" alt="Picco 设备端 USB 传输入口和开启 USB Disk 的操作流程">
             </div>
           </div>
 
