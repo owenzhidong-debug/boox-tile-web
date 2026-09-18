@@ -344,12 +344,23 @@
       padding: 22px 24px 16px;
     }
 
+    .modal-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
     .modal-head.centered {
       justify-content: center;
       position: relative;
       padding: 34px 62px 20px;
       border-bottom: 0;
       text-align: center;
+    }
+
+    .modal-head.centered .modal-title-row {
+      justify-content: center;
     }
 
     .modal-title {
@@ -368,6 +379,18 @@
 
     .modal-copy:empty {
       display: none;
+    }
+
+    .modal-back-btn {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--paper-soft);
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 900;
     }
 
     .close-btn {
@@ -1581,9 +1604,12 @@
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-head centered" id="modalHead">
-        <div>
-          <h2 class="modal-title" id="modalTitle">导入图书</h2>
-          <p class="modal-copy" id="modalCopy">选择本次传输方式。临时传输不需要账号，登录后可保存历史记录。</p>
+        <div class="modal-title-row">
+          <button class="modal-back-btn" id="guideBack" type="button" aria-label="返回上一步" hidden>‹</button>
+          <div>
+            <h2 class="modal-title" id="modalTitle">导入图书</h2>
+            <p class="modal-copy" id="modalCopy">选择本次传输方式。临时传输不需要账号，登录后可保存历史记录。</p>
+          </div>
         </div>
         <button class="close-btn" id="closeModal" type="button" aria-label="关闭">×</button>
       </div>
@@ -1682,7 +1708,6 @@
               <span class="finder-cursor" aria-hidden="true"></span>
             </div>
             <div class="receiver-picker">
-              <button class="primary-btn" id="approveFolder" type="button" hidden>选择接收设备</button>
               <div class="receiver-path" id="receiverPath">
                 <span id="receiverPathText"></span>
                 <button id="manualFolder" type="button">更改路径</button>
@@ -1691,9 +1716,8 @@
           </div>
 
           <div class="usb-guide-nav">
-            <button class="secondary-btn" id="prevGuide" type="button">上一步</button>
             <button class="primary-btn" id="nextGuide" type="button">下一步</button>
-            <button class="primary-btn" id="startBookTransfer" type="button" hidden disabled>开始传书</button>
+            <button class="primary-btn" id="startBookTransfer" type="button" hidden>选择接收设备</button>
           </div>
 
           <div class="usb-step result-step" id="bookStep">
@@ -1759,6 +1783,7 @@
     const choiceFlow = document.getElementById("choiceFlow");
     const transferFlow = document.getElementById("transferFlow");
     const loginFlow = document.getElementById("loginFlow");
+    const guideBack = document.getElementById("guideBack");
     const importBook = document.getElementById("importBook");
     const importWallpaper = document.getElementById("importWallpaper");
     const webLink = document.getElementById("webLink");
@@ -1770,12 +1795,10 @@
     const cloudTransfer = document.getElementById("cloudTransfer");
     const backToChoices = document.getElementById("backToChoices");
     const backToChoicesLogin = document.getElementById("backToChoicesLogin");
-    const approveFolder = document.getElementById("approveFolder");
     const manualFolder = document.getElementById("manualFolder");
     const authHint = document.getElementById("authHint");
     const connectGuideStep = document.getElementById("connectGuideStep");
     const deviceGuideStep = document.getElementById("deviceGuideStep");
-    const prevGuide = document.getElementById("prevGuide");
     const nextGuide = document.getElementById("nextGuide");
     const startBookTransfer = document.getElementById("startBookTransfer");
     const receiverPath = document.getElementById("receiverPath");
@@ -1833,6 +1856,7 @@
       loginFlow.classList.toggle("active", mode === "login");
       modalHead.classList.toggle("centered", mode === "choices");
       modal.classList.toggle("usb-mode", mode === "transfer");
+      guideBack.hidden = true;
 
       if (mode === "choices") {
         modalTitle.textContent = "导入图书";
@@ -1855,11 +1879,9 @@
       demoAuthorized = false;
       usbGuideIndex = 0;
       pickBook.disabled = true;
-      approveFolder.hidden = true;
       receiverPath.classList.remove("visible");
       receiverPathText.textContent = "";
       startBookTransfer.hidden = true;
-      startBookTransfer.disabled = true;
       authHint.textContent = "点击按钮，在新打开的窗口中选择「BOOX Tile」";
       connectGuideStep.classList.add("active");
       deviceGuideStep.classList.remove("active");
@@ -1871,7 +1893,8 @@
       progressBar.style.width = "0%";
       progressValue.textContent = "0%";
       progressLabel.textContent = "准备传输";
-      prevGuide.closest(".usb-guide-nav").classList.remove("hidden");
+      nextGuide.closest(".usb-guide-nav").classList.remove("hidden");
+      guideBack.hidden = true;
       renderUsbGuide();
     }
 
@@ -1879,20 +1902,22 @@
       connectGuideStep.classList.toggle("active", usbGuideIndex === 0);
       deviceGuideStep.classList.toggle("active", usbGuideIndex === 1);
       authorizeStep.classList.toggle("active", usbGuideIndex === 2);
-      prevGuide.disabled = usbGuideIndex === 0;
+      guideBack.hidden = usbGuideIndex === 0;
       nextGuide.hidden = usbGuideIndex === 2;
-      approveFolder.hidden = usbGuideIndex !== 2 || !pickBook.disabled;
       startBookTransfer.hidden = usbGuideIndex !== 2;
     }
 
     function markFolderReady(name, isDemo = false) {
       demoAuthorized = isDemo;
       pickBook.disabled = false;
-      authHint.textContent = "已选择 BOOX Tile，可以开始传书。";
-      approveFolder.hidden = true;
+      authHint.textContent = "已选择 BOOX Tile，可以选择图书。";
       receiverPathText.textContent = name;
       receiverPath.classList.add("visible");
-      startBookTransfer.disabled = false;
+      authorizeStep.classList.remove("active");
+      nextGuide.closest(".usb-guide-nav").classList.add("hidden");
+      guideBack.hidden = true;
+      startBookTransfer.hidden = true;
+      bookStep.classList.add("active");
       showToast("已选择 BOOXTILE 文件夹，可以选择图书。");
     }
 
@@ -1977,7 +2002,7 @@
     backToChoicesLogin.addEventListener("click", () => showFlow("choices"));
     closeModal.addEventListener("click", closeModalView);
     accountBtn.addEventListener("click", () => openModal("login"));
-    prevGuide.addEventListener("click", () => {
+    guideBack.addEventListener("click", () => {
       usbGuideIndex = Math.max(0, usbGuideIndex - 1);
       renderUsbGuide();
     });
@@ -1985,7 +2010,6 @@
       usbGuideIndex = Math.min(2, usbGuideIndex + 1);
       renderUsbGuide();
     });
-    approveFolder.addEventListener("click", requestFolderAccess);
     manualFolder.addEventListener("click", requestFolderAccess);
 
     [importWallpaper, webLink, importFont].forEach((button) => {
@@ -1993,7 +2017,7 @@
     });
 
     pickBook.addEventListener("click", () => bookInput.click());
-    startBookTransfer.addEventListener("click", () => bookInput.click());
+    startBookTransfer.addEventListener("click", requestFolderAccess);
     bookInput.addEventListener("change", () => {
       const file = bookInput.files && bookInput.files[0];
       if (file) startTransfer(file);
