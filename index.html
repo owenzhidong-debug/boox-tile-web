@@ -949,7 +949,7 @@
 
     .folder-help {
       position: relative;
-      justify-self: start;
+      justify-self: center;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -976,7 +976,7 @@
 
     .folder-help-tip {
       position: absolute;
-      left: 0;
+      left: 50%;
       bottom: calc(100% + 10px);
       z-index: 2;
       width: min(320px, 78vw);
@@ -990,7 +990,7 @@
       font-weight: 800;
       line-height: 1.55;
       opacity: 0;
-      transform: translateY(6px);
+      transform: translate(-50%, 6px);
       pointer-events: none;
       transition: opacity 160ms ease, transform 160ms ease;
     }
@@ -998,7 +998,7 @@
     .folder-help:hover .folder-help-tip,
     .folder-help:focus-visible .folder-help-tip {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate(-50%, 0);
     }
 
     .receiver-path {
