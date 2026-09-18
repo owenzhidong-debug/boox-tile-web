@@ -715,6 +715,179 @@
       text-align: center;
     }
 
+    .finder-demo {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(230, 97, 58, 0.22);
+      border-radius: 18px;
+      background: #f6f5f2;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+    }
+
+    .finder-window {
+      display: grid;
+      grid-template-columns: 148px 1fr;
+      min-height: 196px;
+      background: #fff;
+    }
+
+    .finder-sidebar {
+      padding: 14px 10px;
+      border-right: 1px solid #e5e1da;
+      background: #f0efeb;
+    }
+
+    .finder-side-title {
+      margin: 0 0 8px;
+      color: #96918a;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .finder-item {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 9px;
+      border-radius: 10px;
+      color: #4f4b45;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .finder-item.active {
+      position: relative;
+      background: rgba(230, 97, 58, 0.14);
+      color: var(--text);
+      animation: selectDrive 3.8s ease-in-out infinite;
+    }
+
+    .drive-icon {
+      width: 18px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .finder-main {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+      background: #fff;
+    }
+
+    .finder-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border-bottom: 1px solid #ece8e1;
+      color: #77716a;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .finder-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #d9d5ce;
+    }
+
+    .finder-content {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 104px;
+      padding: 18px;
+      color: #6f6961;
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .finder-folder {
+      width: 58px;
+      height: 42px;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+      background: #f2c56d;
+      box-shadow: inset 0 0 0 2px rgba(65, 55, 38, 0.12);
+    }
+
+    .finder-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 12px 14px;
+      border-top: 1px solid #ece8e1;
+      background: #fbfaf8;
+    }
+
+    .finder-confirm {
+      min-width: 82px;
+      min-height: 34px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      animation: confirmPulse 3.8s ease-in-out infinite;
+    }
+
+    .finder-cursor {
+      position: absolute;
+      left: 92px;
+      top: 88px;
+      width: 0;
+      height: 0;
+      border-top: 15px solid #151515;
+      border-right: 10px solid transparent;
+      transform: rotate(-18deg);
+      animation: cursorPick 3.8s ease-in-out infinite;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.18));
+    }
+
+    @keyframes cursorPick {
+      0%, 12% {
+        transform: translate(182px, 46px) rotate(-18deg);
+      }
+      30%, 48% {
+        transform: translate(0, 0) rotate(-18deg);
+      }
+      72%, 88% {
+        transform: translate(404px, 94px) rotate(-18deg);
+      }
+      100% {
+        transform: translate(182px, 46px) rotate(-18deg);
+      }
+    }
+
+    @keyframes selectDrive {
+      0%, 22%, 100% {
+        box-shadow: none;
+      }
+      30%, 58% {
+        box-shadow: 0 0 0 2px rgba(230, 97, 58, 0.42);
+      }
+    }
+
+    @keyframes confirmPulse {
+      0%, 62%, 100% {
+        transform: scale(1);
+        box-shadow: none;
+      }
+      72%, 88% {
+        transform: scale(1.04);
+        box-shadow: 0 0 0 4px rgba(230, 97, 58, 0.18);
+      }
+    }
+
     .step-copy {
       margin: 5px 0 0;
       color: var(--muted);
@@ -1246,6 +1419,23 @@
         grid-template-columns: 1fr;
       }
 
+      .finder-window {
+        grid-template-columns: 112px 1fr;
+      }
+
+      .finder-item {
+        padding: 0 7px;
+        font-size: 12px;
+      }
+
+      .finder-content {
+        padding: 14px;
+      }
+
+      .finder-cursor {
+        display: none;
+      }
+
       .usb-plug {
         left: 90px;
         top: 71px;
@@ -1458,16 +1648,44 @@
             </div>
           </div>
 
-          <div class="usb-step" id="authorizeStep">
-            <span class="step-num">3</span>
-            <div>
-              <p class="step-copy primary-copy" id="authHint">点击按钮，在新打开的窗口中选择「BOOXTILE」，将 Picco 设为图书接收设备。</p>
-              <div class="receiver-picker">
-                <button class="primary-btn" id="approveFolder" type="button" hidden>选择接收设备</button>
-                <div class="receiver-path" id="receiverPath">
-                  <span id="receiverPathText"></span>
-                  <button id="manualFolder" type="button">更改路径</button>
+          <div class="usb-step with-visual" id="authorizeStep">
+            <div class="visual-step-title">
+              <span class="step-num">3</span>
+              <p class="step-title" id="authHint">点击按钮，在新打开的窗口中选择「BOOX Tile」</p>
+            </div>
+            <div class="finder-demo" aria-label="在系统文件选择器中选择 BOOX Tile 盘符并点击确定的动画示意">
+              <div class="finder-window">
+                <aside class="finder-sidebar" aria-label="文件选择器侧边栏">
+                  <p class="finder-side-title">位置</p>
+                  <div class="finder-item"><span class="drive-icon" aria-hidden="true"></span><span>桌面</span></div>
+                  <div class="finder-item"><span class="drive-icon" aria-hidden="true"></span><span>下载</span></div>
+                  <div class="finder-item active"><span class="drive-icon" aria-hidden="true"></span><span>BOOX Tile</span></div>
+                </aside>
+                <div class="finder-main">
+                  <div class="finder-toolbar">
+                    <span class="finder-dot"></span>
+                    <span class="finder-dot"></span>
+                    <span class="finder-dot"></span>
+                    <span>选择保存位置</span>
+                  </div>
+                  <div class="finder-content">
+                    <div>
+                      <div class="finder-folder" aria-hidden="true"></div>
+                      <span>BOOX Tile</span>
+                    </div>
+                  </div>
+                  <div class="finder-footer">
+                    <button class="finder-confirm" type="button" tabindex="-1">确定</button>
+                  </div>
                 </div>
+              </div>
+              <span class="finder-cursor" aria-hidden="true"></span>
+            </div>
+            <div class="receiver-picker">
+              <button class="primary-btn" id="approveFolder" type="button" hidden>选择接收设备</button>
+              <div class="receiver-path" id="receiverPath">
+                <span id="receiverPathText"></span>
+                <button id="manualFolder" type="button">更改路径</button>
               </div>
             </div>
           </div>
@@ -1642,7 +1860,7 @@
       receiverPathText.textContent = "";
       startBookTransfer.hidden = true;
       startBookTransfer.disabled = true;
-      authHint.textContent = "点击按钮，在新打开的窗口中选择「BOOXTILE」，将 Picco 设为图书接收设备。";
+      authHint.textContent = "点击按钮，在新打开的窗口中选择「BOOX Tile」";
       connectGuideStep.classList.add("active");
       deviceGuideStep.classList.remove("active");
       authorizeStep.classList.remove("active");
@@ -1670,7 +1888,7 @@
     function markFolderReady(name, isDemo = false) {
       demoAuthorized = isDemo;
       pickBook.disabled = false;
-      authHint.textContent = "Picco 已设为图书接收设备。";
+      authHint.textContent = "已选择 BOOX Tile，可以开始传书。";
       approveFolder.hidden = true;
       receiverPathText.textContent = name;
       receiverPath.classList.add("visible");
