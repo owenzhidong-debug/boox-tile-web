@@ -328,7 +328,7 @@
     }
 
     .modal.usb-mode {
-      width: min(520px, 100%);
+      width: min(560px, 100%);
       border-radius: 22px;
     }
 
@@ -525,6 +525,12 @@
       background: #fafafa;
     }
 
+    .usb-step.with-visual {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 18px;
+    }
+
     .usb-step.active {
       display: grid !important;
       border-color: rgba(230, 97, 58, 0.34);
@@ -558,6 +564,146 @@
       font-size: 16px;
       font-weight: 900;
       line-height: 1.3;
+    }
+
+    .visual-step-title {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .usb-illustration {
+      position: relative;
+      min-height: 168px;
+      overflow: hidden;
+      border: 1px solid rgba(230, 97, 58, 0.22);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 22% 18%, rgba(230, 97, 58, 0.12), transparent 30%),
+        linear-gradient(180deg, #fffaf6, #f7f4ef);
+    }
+
+    .usb-illustration::before {
+      content: "";
+      position: absolute;
+      left: 96px;
+      right: 138px;
+      top: 88px;
+      height: 8px;
+      border-top: 4px solid #2f2f2f;
+      border-radius: 999px;
+      transform: rotate(-2deg);
+    }
+
+    .usb-illustration::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      width: 120px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(36, 36, 36, 0.08);
+      transform: translateX(-50%);
+    }
+
+    .guide-device {
+      position: absolute;
+      left: 28px;
+      top: 27px;
+      width: 82px;
+      height: 118px;
+      padding: 9px 8px 13px;
+      border: 2px solid #d5d3cf;
+      border-radius: 15px;
+      background: #f0efed;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72), 0 12px 22px rgba(55, 45, 34, 0.08);
+    }
+
+    .guide-device-screen {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d9d6d1;
+      border-radius: 9px;
+      background:
+        linear-gradient(135deg, transparent 0 46%, rgba(36, 36, 36, 0.11) 47% 50%, transparent 51%),
+        linear-gradient(45deg, transparent 0 50%, rgba(36, 36, 36, 0.08) 51% 53%, transparent 54%),
+        #fff;
+      color: #5d5a55;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .guide-computer {
+      position: absolute;
+      right: 24px;
+      top: 35px;
+      width: 142px;
+      height: 92px;
+      border: 3px solid #292929;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 12px 24px rgba(55, 45, 34, 0.08);
+    }
+
+    .guide-computer::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 16px;
+      height: 12px;
+      border-radius: 999px;
+      background: #efebe5;
+    }
+
+    .guide-computer::after {
+      content: "";
+      position: absolute;
+      left: 44px;
+      right: 44px;
+      bottom: -18px;
+      height: 12px;
+      border-radius: 0 0 12px 12px;
+      background: #292929;
+    }
+
+    .usb-plug {
+      position: absolute;
+      left: 112px;
+      top: 79px;
+      width: 24px;
+      height: 21px;
+      border-radius: 5px;
+      background: #292929;
+      box-shadow: 270px 3px 0 -3px #292929;
+    }
+
+    .usb-label {
+      position: absolute;
+      left: 50%;
+      top: 24px;
+      transform: translateX(-50%);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(55, 45, 34, 0.08);
+    }
+
+    .visual-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
     }
 
     .step-copy {
@@ -1063,6 +1209,39 @@
         border-radius: 22px;
       }
 
+      .usb-illustration {
+        min-height: 150px;
+      }
+
+      .usb-illustration::before {
+        left: 82px;
+        right: 112px;
+        top: 80px;
+      }
+
+      .guide-device {
+        left: 16px;
+        top: 26px;
+        width: 72px;
+        height: 106px;
+      }
+
+      .guide-computer {
+        right: 14px;
+        top: 36px;
+        width: 112px;
+        height: 76px;
+      }
+
+      .usb-plug {
+        left: 90px;
+        top: 71px;
+      }
+
+      .usb-label {
+        top: 18px;
+      }
+
       .inline-actions {
         grid-template-columns: 1fr;
       }
@@ -1241,9 +1420,18 @@
 
       <div class="modal-body transfer-flow" id="transferFlow">
         <div class="usb-guide">
-          <div class="usb-step active" id="connectGuideStep">
-            <span class="step-num">1</span>
-            <div>
+          <div class="usb-step with-visual active" id="connectGuideStep">
+            <div class="usb-illustration" aria-label="墨水屏通过 USB 数据线连接电脑示意图">
+              <span class="usb-label">USB 数据线连接</span>
+              <div class="guide-device">
+                <div class="guide-device-screen">Picco</div>
+              </div>
+              <span class="usb-plug" aria-hidden="true"></span>
+              <div class="guide-computer" aria-hidden="true"></div>
+              <div class="visual-caption">将 Picco 用数据线连接到电脑</div>
+            </div>
+            <div class="visual-step-title">
+              <span class="step-num">1</span>
               <p class="step-title">使用 USB 线连接 Picco 和电脑</p>
             </div>
           </div>
